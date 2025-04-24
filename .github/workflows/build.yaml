@@ -60,41 +60,37 @@ jobs:
               for _file in $(ls $dir); do
                   image_file="$dir/$_file"
                   pushed_file="$pushed_dir/$_file"
-                  # 处理文件中的所有镜像行
-                  while IFS= read -r image; do
-                      image=$(echo "$image" | tr -d '[:space:]')
-                      [ -z "$image" ] && continue  # 跳过空行
-                      image_tag=$(echo $image|awk -F ':' '{print $2}')
-                      pushed_tag="a-fake-tag-fb5ebbe64a7f1d6c7686"
+                  image=$(head -n 1 $image_file | tr -d '[:space:]')
+                  image_tag=$(echo $image|awk -F ':' '{print $2}')
+                  pushed_tag="a-fake-tag-fb5ebbe64a7f1d6c7686"
 
-                      if [[ -f "$pushed_file" ]]; then
-                          pushed_tag=$(grep "$image" "$pushed_file" | head -n 1 | tr -d '[:space:]' | awk -F ':' '{print $2}')
-                      fi
-                      if [[ "$image_tag" != "$pushed_tag" ]]; then
-                          echo "not pushed yet, now pushing $image"
-                          github_image="ghcr.io/${GITHUB_REPOSITORY_OWNER}/$image"
-                          docker pull $image
-                          docker tag $image $github_image
-                          docker push $github_image
-                          echo "docker pull $github_image" > $pushed_file
+                  if [[ -f "$pushed_file" ]]; then
+                      pushed_tag=$(head -n 1 $pushed_file | tr -d '[:space:]'|awk -F ':' '{print $2}')
+                  fi
+                  if [[ "$image_tag" != "$pushed_tag" ]]; then
+                      echo 'not pushed yet, now pushing.'
+                      github_image="ghcr.io/${GITHUB_REPOSITORY_OWNER}/$image"
+                      docker pull $image
+                      docker tag $image $github_image
+                      docker push $github_image
+                      echo "docker pull $github_image" > $pushed_file
 
-                          if [[ "$PUSH_TO_GITLAB" == "yes" ]]; then
-                            gitlab_image="registry.gitlab.com/${GITLAB_REPO}/$image"
-                            docker tag $image $gitlab_image
-                            docker push $gitlab_image
-                            echo "docker pull $gitlab_image" >> $pushed_file
-                          fi
-                      else
-                          echo "$image already pushed."
+                      if [[ "$PUSH_TO_GITLAB" == "yes" ]]; then
+                        gitlab_image="registry.gitlab.com/${GITLAB_REPO}/$image"
+                        docker tag $image $gitlab_image
+                        docker push $gitlab_image
+                        echo "docker pull $gitlab_image" >> $pushed_file
                       fi
-                      
-                      image_name=$(echo $image|awk -F ':' '{print $1}')
-                      echo "- $image_name" >> $readme
-                      echo '```ruby' >> $readme
-                      echo "$(cat $pushed_file)" >> $readme
-                      echo '```' >> $readme
-                      echo "" >> $readme
-                  done < "$image_file"
+                  else
+                      echo "$image pushed."
+                  fi
+                  
+                  image_name=$(echo $image|awk -F ':' '{print $1}')
+                  echo "- $image_name" >> $readme
+                  echo '```ruby' >> $readme
+                  echo "$(cat $pushed_file)" >> $readme
+                  echo '```' >> $readme
+                  echo "" >> $readme
               done
           done
 
