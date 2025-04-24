@@ -1,0 +1,2 @@
+docker pull ghcr.io/maxage/jxxghp/moviepilot-v2:latest
+docker pull registry.gitlab.com/maxage/docker-images/jxxghp/moviepilot-v2:latest
