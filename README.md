@@ -31,6 +31,7 @@
 - amilys/embyserver
 ```ruby
 docker pull ghcr.io/maxage/amilys/embyserver:beta
+docker pull registry.gitlab.com/maxage/a/amilys/embyserver:beta
 ```
 
 - amilys/embyserver
