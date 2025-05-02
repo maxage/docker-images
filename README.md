@@ -28,20 +28,8 @@
 ### 📋 5. 可用镜像列表
 当前管理的镜像列表：
 🔄 👇👇👇👇👇👇
-- neilpang/acme.sh
-```ruby
-docker pull ghcr.io/maxage/neilpang/acme.sh:latest
-docker pull registry.gitlab.com/maxage/docker-images/neilpang/acme.sh:latest
-```
-
 - amilys/embyserver
 ```ruby
 docker pull ghcr.io/maxage/amilys/embyserver:beta
-```
-
-- jxxghp/moviepilot-v2
-```ruby
-docker pull ghcr.io/maxage/jxxghp/moviepilot-v2:latest
-docker pull registry.gitlab.com/maxage/docker-images/jxxghp/moviepilot-v2:latest
 ```
 
